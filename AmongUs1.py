@@ -28,21 +28,19 @@ pd.options.display.max_columns = 10
 #------------------------------------------Here are all the functions used--------------------------------------------------
 def init_game():
     print("Hello, and Welcome.  Please Enter the names of players in your game (seperated by a ', ')...")
-    #names = input()
-    names = "Gman, Birdsaw, mep, Brandon, MrBlu, Sloth, beefer, autumn, Yeet, Jake"
+    names = input()
     lst = names.split(', ')
+    print("How many imposters are in your game?")
+    IMPcount = int(input())
     temp = []
     for name in lst:#creates dict of each player and thier info--> dict['name']['info']
         temp.append({
             "name"  : name,
             "clear" : False,
             "alive" : True,
-            "IMP_percent" : round((1/len(lst)) * 100, 2)
+            "IMP_percent" : round((IMPcount/len(lst)) * 100, 2)
             })
-    print("How many imposters are in your game?")
-    #IMPcount = int(input())
-    IMPcount = 2
-    print("THIS IS HARDCODED, DUMBASS")
+    
     print("Game with " + str(len(lst)) + " players, " + str(IMPcount) + " imposters, initiating...")
     return temp, len(lst), names, IMPcount
 
@@ -87,7 +85,7 @@ def pull_data(players, IMPcount):
         print(df_dead)
 
 
-def percentCalc(players):#this is the repetetative function to calculate the likely hood of someone being the imposter
+def percentCalc(players, IMPcount):#this is the repetetative function to calculate the likely hood of someone being the imposter
     aliveCount = 0
     clearCount = 0
     for player in players:
@@ -98,7 +96,7 @@ def percentCalc(players):#this is the repetetative function to calculate the lik
 
     for player in players:
        if player['alive'] == True and player['clear'] == False:
-            p = {'IMP_percent'   :  round((1/(aliveCount - clearCount)) * 100, 2)}
+            p = {'IMP_percent'   :  round((IMPcount/(aliveCount - clearCount)) * 100, 2)}
             player.update(p)
     return players
 
@@ -125,7 +123,7 @@ def dead(players, numImp, dead):
             player.update(a)
             player.update(p)
             player.update(c)
-    players = percentCalc(players)
+    players = percentCalc(players, numImp)
     pull_data(players, numImp)
     return players
 
@@ -148,7 +146,7 @@ def clear(players, numImp, cleared):
             c = {'clear'    :   True}
             player.update(p)
             player.update(c)
-    players = percentCalc(players)
+    players = percentCalc(players, numImp)
     pull_data(players, numImp)
     return players
 
@@ -175,7 +173,7 @@ def confirmed_eject(players, numImp, confirmed):
             player.update(p)
             player.update(c)
             numImp = numImp - 1
-    players = percentCalc(players)
+    players = percentCalc(players, numImp)
     pull_data(players, numImp)
     return players, numImp
 
