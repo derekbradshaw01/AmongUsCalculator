@@ -199,15 +199,29 @@ def display_help():
     print()
     print("<------------------------------------------------------------------------->")
 
+def reload_game(players, IMPcount):
+    for player in players:
+        a = {"clear" : False}
+        b = {"alive" : True}
+        c = {"IMP_percent" : round((IMPcount/len(players)) * 100, 2)}
+        player.update(a)
+        player.update(b)
+        player.update(c)
+    return players
+
+
 
 
 #------------------------------------------This is the actual gameplay logic------------------------------------------------
 player, num, roundNames, IMPcount = init_game()
 
+playerStored = copy.deepcopy(player) #allows us to keep a hard copy of current players in game
+IMPcountStored = IMPcount#keeps a hard copy of numImposters for when we need to reload a game
+
 while(True):
-    #if IMPcount == 0:
-    #    print("Reload Game(R) or Edit New(E)?")
-    #    IMPcount = 1
+    if IMPcount == 0:
+        print("Reload Game(R) or Edit New(E)?")
+        
         
     txt = input().split(" ")
 
@@ -223,9 +237,15 @@ while(True):
         player, IMPcount = confirmed_eject(player, IMPcount, txt[1])
     if txt[0] == "help":
         display_help()
+    if txt[0] == "R":
+        player = reload_game(playerStored, IMPcountStored)
+        IMPcount = IMPcountStored
+    if txt[0] == "E":
+        var = 1
+        #redo init_game() and continue with the program, saving everyone's IMPtracker
 
 
-
+    
 
 
 
