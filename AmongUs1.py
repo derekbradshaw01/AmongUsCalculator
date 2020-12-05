@@ -28,7 +28,8 @@ pd.options.display.max_columns = 10
 #------------------------------------------Here are all the functions used--------------------------------------------------
 def init_game():
     print("Hello, and Welcome.  Please Enter the names of players in your game (seperated by a ', ')...")
-    names = input()
+    #names = input()
+    names = 'Gman, Birdsaw, Jack, Yeet, Brandon'
     lst = names.split(', ')
     print("How many imposters are in your game?")
     IMPcount = int(input())
@@ -38,7 +39,9 @@ def init_game():
             "name"  : name,
             "clear" : False,
             "alive" : True,
-            "IMP_percent" : round((IMPcount/len(lst)) * 100, 2)
+            "IMP_percent" : round((IMPcount/len(lst)) * 100, 2),
+            "playCount" :   0,
+            "timesIMP"  :   0
             })
     
     print("Game with " + str(len(lst)) + " players, " + str(IMPcount) + " imposters, initiating...")
@@ -172,6 +175,7 @@ def confirmed_eject(players, numImp, confirmed):
             player.update(a)
             player.update(p)
             player.update(c)
+            player["timesIMP"] += 1
             numImp = numImp - 1
     players = percentCalc(players, numImp)
     pull_data(players, numImp)
@@ -204,9 +208,11 @@ def reload_game(players, IMPcount):
         a = {"clear" : False}
         b = {"alive" : True}
         c = {"IMP_percent" : round((IMPcount/len(players)) * 100, 2)}
+        player["playCount"] += 1
         player.update(a)
         player.update(b)
         player.update(c)
+        print(player)
     return players
 
 
@@ -238,7 +244,9 @@ while(True):
     if txt[0] == "help":
         display_help()
     if txt[0] == "R":
+        playerStored = copy.deepcopy(player) #allows us to keep a hard copy of current players in game
         player = reload_game(playerStored, IMPcountStored)
+        
         IMPcount = IMPcountStored
     if txt[0] == "E":
         var = 1
